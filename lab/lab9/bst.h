@@ -5,8 +5,9 @@
 typedef struct node{
 	int val;
 	struct node *left, *right;
-} bst;
+}bst;
 
+//function prototypes
 bst *create_node(int val);
 bst *insert(bst *root, int val);
 void printInorder(bst *root);
@@ -39,10 +40,6 @@ bst *insert(bst *root, int val)
 }
 
 
-void printInorder(bst *root)
-{
-
-}
 
 void padding(char toPrint, int numTimes)
 {
@@ -70,3 +67,38 @@ void printTree(bst* root)
 {
 	displayBST(root, 0);
 }
+//prints the bst in order
+void printInorder(bst *root){
+
+  if(root == NULL){
+    return;
+  }
+
+  printInorder(root->left);
+  printf("%d ", root->val);
+  printInorder(root->right);
+
+}
+//prints the bst in preorder
+void printPreorder(bst *root){
+
+  if(root == NULL){
+    return;
+  }
+
+  printf("%d ",root->val);
+  printPreorder(root->left);
+  printPreorder(root->right);
+}
+// prints the bst in postorder
+void printPostorder(bst* root){
+
+  if(root == NULL){
+    return;
+  }
+
+  printPostorder(root->left);
+  printPostorder(root->right);
+  printf("%d ",root->val);
+}
+
