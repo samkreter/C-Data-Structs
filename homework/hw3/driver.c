@@ -27,13 +27,28 @@ for and why we include it outside of our driver.c file*/
 
 int main (int argc, char*argv[]){
     
-	FILE* input = fopen("hw3.txt","r");
+	//check command line arguments 
+    if(argc != 3){
+        printf("Insufficent command line arguments");
+        exit(0);
+    }
 
-    BST* root = NULL;
+    FILE* input = fopen(argv[1],"r");
+    if(input == NULL){
+        printf("File %s could not be opened",argv[1]);
+        exit(0);
+    }
+    FILE* search = fopen(argv[2],"r");
+    if(search == NULL){
+        printf("file %s could not be opened",argv[2]);
+    }
+
+    BST* root = NULL; //create the bst
     int value, count;
-    value = count = 0;
+    value = count = 1;
     rootList* listHead = NULL;
 
+    //populate from the file
 	while(fscanf(input,"%d",&value) != EOF){
 		
  		if(value == -1){
@@ -49,6 +64,17 @@ int main (int argc, char*argv[]){
 
 	printTrees(listHead);
 
+    //results of the bfs
+    printf("\n%s%10s%12s%12s\n","Number","Found","Tree","Level");
+    while(fscanf(search,"%d",&value) != EOF){
+        BFS(listHead,value);
+    }
+
+    free_list(&listHead);
+
+
+    //close the files
+    close(search);
     close(input);
 
     return 0;

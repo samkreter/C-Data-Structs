@@ -34,6 +34,8 @@ BST* createTreeNode(int nodeValue, int treeNum){
 *****************************************************************************************/
 
 void insert_BST(BST** root, int insertValue, int treeNum){
+	
+	//check if it is the first node in the list
 	if(*root == NULL){
 		*root = createTreeNode(insertValue,treeNum);
 		return;
@@ -96,6 +98,7 @@ void insert_rootList(rootList** listHead, BST* new_root){
  *********************************************************************************/
 
 void BFS(rootList* listHead, int searchValue){
+	
 	//check if empty
 	if(listHead == NULL){
 		return;
@@ -105,15 +108,24 @@ void BFS(rootList* listHead, int searchValue){
 	bfsQ* queue = NULL;
 	rootList* temp = listHead;
 	BST* traverse = NULL;
-	int level, found;
-	level = found = 0;
+	int level, num;
+	level = num = 0;
 	
+    
+
 	//queue up all the roots
 	while(temp->next != NULL){
 		enqueue(&queue,temp->root);
+		temp = temp->next;
+		num++;
 	}
 
-	traverse = dequeue(queue);
+	enqueue(&queue, temp->root);
+    num++;
+
+    
+
+	traverse = dequeue(&queue);
 	while(traverse != NULL){
 		
 		if(traverse->left != NULL){
@@ -122,14 +134,22 @@ void BFS(rootList* listHead, int searchValue){
 		if(traverse->right != NULL){
 			enqueue(&queue, traverse->right);
 		}
+		if(traverse->treeNum == num){
+			level++;
+		}
 
 		if(traverse->value == searchValue){
-			break;
+			printf("%3d%12s%12d%12d\n",searchValue,"YES",traverse->treeNum, level);
+			return;
 		}
-		else{
-			traverse = dequeue(queue);
-		}
+
+	    traverse = dequeue(&queue);
+
 	}
+
+	
+	//print if the value is not found 
+	printf("%3d%12s%12s%12s\n",searchValue,"NO","N/A","N/A");
 
 
 
@@ -146,11 +166,12 @@ void BFS(rootList* listHead, int searchValue){
 
 void enqueue(bfsQ** qHead, BST* new_tree_node){
 	if(*qHead == NULL){
+		*qHead = (bfsQ *)malloc(sizeof(bfsQ*));
 		(*qHead)->treeNode = new_tree_node;
 		(*qHead)->next = NULL;
 	}
 	else{
-		enqueue(&(*qHead->next),new_tree_node);
+		enqueue(&((*qHead)->next),new_tree_node);
 	}
 }
 
@@ -164,8 +185,17 @@ void enqueue(bfsQ** qHead, BST* new_tree_node){
 
 BST* dequeue(bfsQ** qHead){
 	bfsQ* temp = *qHead;
+	BST* curr = NULL;
+    
+	if(temp != NULL){
     *qHead = (*qHead)->next;
-    return temp;
+    curr = temp->treeNode;
+    free(temp);
+    return curr;
+	}
+	else{
+		return NULL;
+	}
 }
 
 /********************************** printTrees **************************************
@@ -214,8 +244,16 @@ void print_BST_inorder(BST* root){
  *********************************************************************************/
 
 void free_list(rootList** listHead){
-
+	if(*listHead == NULL){
+		return;
+	}
+	else{
+		free_list(&((*listHead)->next));
+		free_BSTs((*listHead)->root);
+		free(*listHead);
+	}
 }
+
 
 /********************************* free_BSTs *************************************
  parameters: Pointer to the root of the binary search tree
@@ -225,6 +263,13 @@ void free_list(rootList** listHead){
  *********************************************************************************/
 
 void free_BSTs(BST* root){
-
+	if(root == NULL){
+		return;
+	}
+	else{
+		free_BSTs(root->right);
+		free_BSTs(root->left);
+		free(root);
+	}
 }
 
