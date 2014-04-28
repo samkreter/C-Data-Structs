@@ -36,13 +36,32 @@ static char prec(char operator) {
  * 0 otherwise
  */
 static int isNumeric(char *num) {
-	char *test;
-	strtoI(num,&test);
-	if(*test == '/0'){
+
+	char* end;
+
+	if(!strtol(num,&end,10)){
 		return 0;
 	}
-	else 
+	else{
 		return 1;
+	}
+
+}
+
+char numTochar(int num){
+	
+	switch(operator){
+		case 5:
+			return '*';
+		case 4:
+			return '/';
+		case 3:
+			return '%';
+		case 2:
+			return '+';
+		case 1:
+			return '-';
+	}	
 }
 
 
@@ -73,6 +92,43 @@ static int isNumeric(char *num) {
  *     pop the top element off of the stack and append it to the postfix string
  */
 char* infix_to_postfix(char* infix) {
+	char toke = '\0',;
+	int i = 0, length = strlen(infix), value = 0, operate = 0;
+	char* postfix = malloc(sizeof(infix)*length);
+	char* tokeptr = &toke;
+	stack* s = create_stack();
+
+	for(i=0; i<=length; i++){
+		toke = infix[i];
+		if(isNumeric(tokeptr)){
+			*postfix = toke;
+			postfix++;
+		}
+		else if(toke == '('){
+			value = prec(toke);
+			push(s, value);
+		}
+		else if(toke == ')'){
+			while(s->stack != NULL && s->stack->data != '('){
+				top(s);
+				postfix++;
+				pop(s);
+			}
+			pop(s);
+		}/*
+		else{
+			operate = prec(toke);
+			while(s->stack != NULL && s->stack->data > operate){
+				*postfix = top(s);
+				postfix++;
+				pop(s);
+			}
+			*postfix = operate;
+			postfix++;
+		}*/
+	}
+
+
 }
 
 /*

@@ -30,19 +30,22 @@ void push(stack *s, int val) {
  * the value is not returned
  */
 void pop(stack *s) {
-	if(s == NULL){
+	if(s->stack == NULL){
 		return;
 	}
+
+	
 	if(s->stack != NULL){
 		node* temp = s->stack;
+	
+		if(temp->next != NULL){
+			s->stack = temp->next;
+		}
+		else{
+			s->stack == NULL;
+		}
+		free(temp);
 	}
-	if(temp->next != NULL){
-		s->stack = temp->next;
-	}
-	else{
-		s->stack == NULL;
-	}
-	free(temp);
 
 }
 

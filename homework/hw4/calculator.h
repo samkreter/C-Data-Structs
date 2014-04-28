@@ -5,5 +5,6 @@
 
 char* infix_to_postfix(char* equ);
 int evaluate_postfix(char* equ);
+char numTochar(int num);
 
 #endif
