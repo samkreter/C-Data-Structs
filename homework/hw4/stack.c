@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "stack.h"
 
@@ -19,6 +20,7 @@ stack* create_stack() {
  */ 
 void push(stack *s, int val) {
     node *n = malloc(sizeof(node));
+    if(n == NULL){printf("failed push");}
     n->data = val;
     n->next = s->stack;
     s->stack = n;
@@ -31,6 +33,7 @@ void push(stack *s, int val) {
  */
 void pop(stack *s) {
 	if(s->stack == NULL){
+		//printf("poped empty stack");
 		return;
 	}
 
@@ -42,8 +45,9 @@ void pop(stack *s) {
 			s->stack = temp->next;
 		}
 		else{
-			s->stack == NULL;
+			s->stack = NULL;
 		}
+		s->size--;
 		free(temp);
 	}
 

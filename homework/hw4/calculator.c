@@ -26,6 +26,10 @@ static char prec(char operator) {
 			return 2;
 		case '-':
 			return 1;
+		case ')':
+			return -1;
+		case '(':
+			return -2;
 		default: 
 			return 0;
 	}
@@ -50,7 +54,7 @@ static int isNumeric(char *num) {
 
 char numTochar(int num){
 	
-	switch(operator){
+	switch(num){
 		case 5:
 			return '*';
 		case 4:
@@ -61,7 +65,31 @@ char numTochar(int num){
 			return '+';
 		case 1:
 			return '-';
+		case -1:
+			return ')';
+		case -2: 
+			return '(';
+		default:
+			printf("bad in numTochar");
 	}	
+}
+
+int eval(int val1, int val2, char op){
+	switch(op){
+		case '*':
+			return val2 * val1;
+		case '/':
+			return val2 / val1;
+		case '%':
+			return val2 % val1;
+		case '+':
+			return val2 + val1;
+		case '-':
+			return val2 - val1;
+		default:
+			printf("something bad in eval %c is the ",op);
+			return 0;
+	}
 }
 
 
@@ -92,15 +120,19 @@ char numTochar(int num){
  *     pop the top element off of the stack and append it to the postfix string
  */
 char* infix_to_postfix(char* infix) {
-	char toke = '\0',;
+	char toke = '\0';
 	int i = 0, length = strlen(infix), value = 0, operate = 0;
-	char* postfix = malloc(sizeof(infix)*length);
+	char* postfix = malloc(sizeof(char)*length);
+	char* holder = postfix;
 	char* tokeptr = &toke;
 	stack* s = create_stack();
 
-	for(i=0; i<=length; i++){
+	for(i=0; i<length; i++){
 		toke = infix[i];
-		if(isNumeric(tokeptr)){
+		if(toke == ' '){
+
+		}
+		else if(isNumeric(tokeptr)){
 			*postfix = toke;
 			postfix++;
 		}
@@ -109,25 +141,35 @@ char* infix_to_postfix(char* infix) {
 			push(s, value);
 		}
 		else if(toke == ')'){
-			while(s->stack != NULL && s->stack->data != '('){
-				top(s);
+			while(s->stack != NULL && s->stack->data != -2){
+				toke = numTochar(top(s));
+				*postfix = toke;
 				postfix++;
 				pop(s);
 			}
 			pop(s);
-		}/*
+		}
 		else{
 			operate = prec(toke);
-			while(s->stack != NULL && s->stack->data > operate){
-				*postfix = top(s);
+			while(s->stack != NULL && top(s) > operate){
+				toke = numTochar(top(s));
+				*postfix = toke;
 				postfix++;
 				pop(s);
-			}
-			*postfix = operate;
-			postfix++;
-		}*/
-	}
+			} 
+			push(s, operate);
 
+			
+		}
+		
+	}
+	while(s->size != 0){
+			*postfix = numTochar(top(s));
+			postfix++;
+			pop(s);
+	}
+	free(s);
+	return holder;
 
 }
 
@@ -153,5 +195,25 @@ char* infix_to_postfix(char* infix) {
  */
 
 int evaluate_postfix(char* postfix) {
+	int i = 0,val1 = 0,val2 = 0;
+	char toke = '\0';
+	char *tokeptr = &toke, *end = NULL;
+	stack* s = create_stack();
+	for(i=0;i<strlen(postfix);i++){
+		*tokeptr = postfix[i];
+		if(isNumeric(tokeptr)){
+			push(s,strtol(tokeptr,&end,10));
+		}
+		else{
+			val1 = top(s);
+			pop(s);
+			val2 = top(s);
+			pop(s);
+			push(s,eval(val1, val2,*tokeptr));
+		}
+	}
+	return top(s);
 }
+
+
 
