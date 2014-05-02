@@ -26,10 +26,6 @@ static char prec(char operator) {
 			return 2;
 		case '-':
 			return 1;
-		case ')':
-			return -1;
-		case '(':
-			return -2;
 		default: 
 			return 0;
 	}
@@ -43,7 +39,7 @@ static int isNumeric(char *num) {
 
 	char* end;
 
-	if(!strtol(num,&end,10)){
+	if(!strtol(num,&end,10)){ //strtol returns 0 of not number
 		return 0;
 	}
 	else{
@@ -52,28 +48,8 @@ static int isNumeric(char *num) {
 
 }
 
-char numTochar(int num){
-	
-	switch(num){
-		case 5:
-			return '*';
-		case 4:
-			return '/';
-		case 3:
-			return '%';
-		case 2:
-			return '+';
-		case 1:
-			return '-';
-		case -1:
-			return ')';
-		case -2: 
-			return '(';
-		default:
-			printf("bad in numTochar");
-	}	
-}
 
+//func to eval what is sent to it 
 int eval(int val1, int val2, char op){
 	switch(op){
 		case '*':
@@ -87,6 +63,7 @@ int eval(int val1, int val2, char op){
 		case '-':
 			return val2 - val1;
 		default:
+		//simple error message
 			printf("something bad in eval %c is the ",op);
 			return 0;
 	}
@@ -121,50 +98,49 @@ int eval(int val1, int val2, char op){
  */
 char* infix_to_postfix(char* infix) {
 	char toke = '\0';
-	int i = 0, length = strlen(infix), value = 0, operate = 0;
+	int i = 0, length = strlen(infix);
 	char* postfix = malloc(sizeof(char)*length);
 	char* holder = postfix;
 	char* tokeptr = &toke;
-	stack* s = create_stack();
+	stack* s = create_stack(); //create the stack
 
 	for(i=0; i<length; i++){
 		toke = infix[i];
 		if(toke == ' '){
 
-		}
+		} //add numbers to the string
 		else if(isNumeric(tokeptr)){
 			*postfix = toke;
-			postfix++;
+			postfix++; 
 		}
 		else if(toke == '('){
-			value = prec(toke);
-			push(s, value);
+			push(s, toke);
 		}
 		else if(toke == ')'){
-			while(s->stack != NULL && s->stack->data != -2){
-				toke = numTochar(top(s));
+			while(isEmpty(s) != 1 && top(s) != '('){
+				toke = top(s);
 				*postfix = toke;
 				postfix++;
 				pop(s);
 			}
 			pop(s);
 		}
-		else{
-			operate = prec(toke);
-			while(s->stack != NULL && top(s) > operate){
-				toke = numTochar(top(s));
+		else{ //catches all the operators 
+			while(isEmpty(s) != 1 && prec(top(s)) > prec(toke)){
+				toke = top(s);
 				*postfix = toke;
 				postfix++;
 				pop(s);
 			} 
-			push(s, operate);
+			push(s, toke);
 
 			
 		}
 		
 	}
-	while(s->size != 0){
-			*postfix = numTochar(top(s));
+	//puts rest of the stack into the string
+	while(isEmpty(s) != 1){
+			*postfix = top(s);
 			postfix++;
 			pop(s);
 	}
@@ -195,7 +171,7 @@ char* infix_to_postfix(char* infix) {
  */
 
 int evaluate_postfix(char* postfix) {
-	int i = 0,val1 = 0,val2 = 0;
+	int i = 0,val1 = 0,val2 = 0, anwser = 0;
 	char toke = '\0';
 	char *tokeptr = &toke, *end = NULL;
 	stack* s = create_stack();
@@ -212,6 +188,7 @@ int evaluate_postfix(char* postfix) {
 			push(s,eval(val1, val2,*tokeptr));
 		}
 	}
+
 	return top(s);
 }
 

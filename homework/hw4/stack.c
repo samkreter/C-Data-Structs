@@ -33,7 +33,6 @@ void push(stack *s, int val) {
  */
 void pop(stack *s) {
 	if(s->stack == NULL){
-		//printf("poped empty stack");
 		return;
 	}
 
@@ -59,6 +58,10 @@ void pop(stack *s) {
  * the stack remains unchanged
  */
 int top(stack *s) {
+	if(isEmpty(s)){
+		printf("top empty stack");
+		return 0;
+	}
 	return s->stack->data;
 }
 

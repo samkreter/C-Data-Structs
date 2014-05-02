@@ -11,13 +11,13 @@ int main(int argc, char* argv[]) {
     
     
     char buffer[BUFFERSIZE];
-    /*
+    
     if (argc != 2) {
         printf("correct ussage: %s <input file>\n", argv[0]);
         return 1;
-    }*/
+    }
 
-    FILE* fp = fopen("input.txt", "r");
+    FILE* fp = fopen(argv[1], "r");
 
     if(fp == NULL) {
         printf("unable to open file: %s\n", argv[1]);
@@ -39,5 +39,6 @@ int main(int argc, char* argv[]) {
         printf("%s = %d\n", buffer, result);
     }
     
+    close(fp);
     return 0;
 }
