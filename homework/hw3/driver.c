@@ -1,6 +1,11 @@
+//Sam Kreter
+//sakfy6
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+
+
 
 /*This is needed in order to for us to use our functions located in algorithm.c
 as well as our structures. Make sure you understand what this header file is here

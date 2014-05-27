@@ -79,18 +79,17 @@ int main(int argc, char *argv[]){
 
 int binary_search(int array[], int key, int low, int high){
   
-  //if it cycles through the array and the number is not found
   if(high <low){
     return 0;
   }
   int middle = (low + high)/2;
-  if(key < array[middle]){ //check if you need to go to the lower half
+  if(key < array[middle]){ 
     return binary_search(array,key,low,middle-1);
   }
-  else if(key > array[middle]){ //check if needed to go to higher half
+  else if(key > array[middle]){ 
     return binary_search(array, key, middle+1, high);
   }
-  else if(key == array[middle]){ //check the last one 
+  else if(key == array[middle]){ 
     return middle;
   }
 }
